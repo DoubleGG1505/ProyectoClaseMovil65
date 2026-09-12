@@ -28,9 +28,7 @@ export default function App() {
       <ThemeProvider>
         <LanguageProvider>
           <AuthProvider>
-            <SkincareProvider>
               <AppNavigation />
-            </SkincareProvider>
           </AuthProvider>
         </LanguageProvider>
       </ThemeProvider>
