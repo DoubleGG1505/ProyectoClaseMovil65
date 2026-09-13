@@ -1,3 +1,9 @@
+/**
+ * Este contexto ha quedado en desuso.
+ * El estado global de productos fue migrado completamente a Redux Toolkit (skincareSlice).
+ */
+
+
 import { createContext, useContext, useState, ReactNode } from "react";
 import { Product, ProductReview } from "../utils/types/Skincare";
 
