@@ -8,23 +8,24 @@ import SectionTitle from "../components/SectionTitle";
 import StarRating from "../components/StarRating";
 import TagChip from "../components/TagChip";
 import { useTheme } from "../contexts/ThemeContext";
-import { useSkincare } from "../contexts/SkincareContext";
+import {addReview, deleteProduct} from "../store/slices/skincareSlice";
 import { RootStackParamList } from "../navigation/StackNavigator";
 import { CATEGORY_LABELS, UsageTimeUnit } from "../utils/types/Skincare";
+import { useAppSelector, useAppDispatch } from "../store/hooks";
 
 type Props = NativeStackScreenProps<RootStackParamList, "ProductDetail">;
 
 export default function ProductDetail({ route, navigation }: Props) {
-  const { products, addReview, deleteProduct } = useSkincare();
+  const products = useAppSelector((state) => state.skincare.products);
+ const dispatch = useAppDispatch();
   const { productId } = route.params;
   const { colors } = useTheme();
   const product = products.find((p) => p.id === productId);
 
   const [rating, setRating] = useState(product?.review?.rating ?? 0);
   const [comment, setComment] = useState(product?.review?.comment ?? "");
-  const [usageDuration, setUsageDuration] = useState(
-    product?.review?.usageDuration?.toString() ?? "",
-  );
+  const [usageDuration, setUsageDuration] = useState( product?.review?.usageDuration?.toString() ?? "",);
+  
   const [usageUnit, setUsageUnit] = useState<UsageTimeUnit>(
     product?.review?.usageUnit ?? "weeks",
   );
@@ -45,18 +46,23 @@ export default function ProductDetail({ route, navigation }: Props) {
   }
 
   const handleSaveReview = () => {
-    if (rating === 0 || !usageDuration.trim()) return;
-    addReview(productId, {
-      rating,
-      comment: comment.trim(),
-      usageDuration: parseInt(usageDuration, 10),
-      usageUnit,
-    });
+    dispatch(
+      addReview({
+        productId,
+        review: {
+          rating,
+          comment,
+          usageDuration: Number(usageDuration)||0,
+          usageUnit,
+        },
+      })
+    );
+
     navigation.goBack();
   };
 
   const handleDelete = () => {
-    deleteProduct(productId);
+    dispatch(deleteProduct(productId));
     navigation.goBack();
   };
 
